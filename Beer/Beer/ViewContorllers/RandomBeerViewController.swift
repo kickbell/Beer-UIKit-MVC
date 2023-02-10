@@ -1,18 +1,16 @@
 //
-//  ViewController.swift
+//  RandomBeerViewController.swift
 //  Beer
 //
-//  Created by jc.kim on 1/31/23.
+//  Created by jc.kim on 2/4/23.
 //
 
 import UIKit
 
-class BeerStoreViewController: UIViewController {
+class RandomBeerViewController: UIViewController {
     let sections = Bundle.main.decode([Section].self, from: "appstore.json")
     var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     var dataSource: UICollectionViewDiffableDataSource<Section, App>?
-    
-    let beerapi = BeerAPIImpl(session: URLSession.shared)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,15 +18,12 @@ class BeerStoreViewController: UIViewController {
         addSubviews()
         createDataSource()
         applyInitialSnapshot()
-        
-        beerapi.search(for: 1)
-        
     }
     
     func addAttributes() {
         view.backgroundColor = .white
         
-        title = "스토어"
+        title = "랜덤"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
@@ -46,19 +41,30 @@ class BeerStoreViewController: UIViewController {
         }
     }
     
+    func createListCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, App> {
+        return UICollectionView.CellRegistration<UICollectionViewListCell, App> { (cell, indexPath, app) in
+            var content = UIListContentConfiguration.valueCell()
+            content.image = UIImage(named: app.image)
+            content.text = app.name
+            content.secondaryText = "\(Int.random(in: 1...50))"
+            cell.contentConfiguration = content
+            cell.accessories = [UICellAccessory.disclosureIndicator()]
+        }
+    }
+    
     func sectionHeaderRegistration<T: UICollectionReusableView>(_ viewType: T.Type) -> UICollectionView.SupplementaryRegistration<T>{
         return UICollectionView.SupplementaryRegistration<T>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView,elementKind,indexPath in }
     }
     
     func createDataSource() {
         let featuredCellRegistration = cellRegistration(FeaturedCell.self)
-        let smallTableCellRegistration = cellRegistration(SmallTableCell.self)
-        let mediumTableCellRegistration = cellRegistration(ThreeTableCell.self)
+        let smallTableCellRegistration = createListCellRegistration()
+        let mediumTableCellRegistration = cellRegistration(SquareCell.self)
         let sectionHeaderRegistration = sectionHeaderRegistration(SectionHeader.self)
         
         dataSource = UICollectionViewDiffableDataSource<Section, App>(collectionView: collectionView) { collectionView, indexPath, app in
             let section = self.sections[indexPath.section]
-            
+
             switch section.appType {
             case .mediumTable:
                 return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
@@ -67,7 +73,7 @@ class BeerStoreViewController: UIViewController {
             case .featured:
                 return collectionView.dequeueConfiguredReusableCell(using: featuredCellRegistration, for: indexPath, item: app)
             case .none:
-                return UICollectionViewCell()
+                return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
             }
         }
         
@@ -77,9 +83,12 @@ class BeerStoreViewController: UIViewController {
             guard let firstApp = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
             guard let section = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstApp) else { return nil }
             if section.title.isEmpty { return nil }
-            
             sectionHeader.title.text = section.title
             sectionHeader.subtitle.text = section.subtitle
+            sectionHeader.accessoryButton.isHidden = false
+            sectionHeader.accessoryButtonDidTap = {
+                print("accessoryButtonDidTap...")
+            }
             return sectionHeader
         }
     }
@@ -103,7 +112,7 @@ class BeerStoreViewController: UIViewController {
             case .mediumTable:
                 return self.createMediumTableSection(using: section)
             case .smallTable:
-                return self.createSmallTableSection(using: section)
+                return self.createSmallTableSection(using: section, layoutEnvironment: layoutEnvironment)
             default:
                 return self.createFeaturedSection(using: section)
             }
@@ -117,45 +126,42 @@ class BeerStoreViewController: UIViewController {
     
     func createFeaturedSection(using section: Section) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        
+
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(350))
         let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
-        
+
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
         return layoutSection
     }
     
     func createMediumTableSection(using section: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.33))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
         
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .fractionalWidth(0.55))
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(0.5))
         let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
         
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-        layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
+        layoutSection.orthogonalScrollingBehavior = .groupPaging
         let layoutSectionHeader = createSectionHeader()
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
         return layoutSection
     }
     
-    func createSmallTableSection(using section: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2))
-        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+    func createSmallTableSection(using section: Section, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(200))
-        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
+        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
+        configuration.backgroundColor = .white
+        let layoutSection = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
         
-        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         let layoutSectionHeader = createSectionHeader()
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
-        
+
         return layoutSection
     }
     
@@ -166,8 +172,7 @@ class BeerStoreViewController: UIViewController {
     }
 }
 
-
-extension BeerStoreViewController: UICollectionViewDelegate {
+extension RandomBeerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let app = self.dataSource?.itemIdentifier(for: indexPath) else {
             collectionView.deselectItem(at: indexPath, animated: true)
