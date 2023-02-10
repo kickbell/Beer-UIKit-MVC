@@ -31,6 +31,7 @@
 		A84A48E6299065D700DF67B5 /* appstore.json in Resources */ = {isa = PBXBuildFile; fileRef = A84A48E5299065D700DF67B5 /* appstore.json */; };
 		A84A48E829906F0E00DF67B5 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84A48E729906F0E00DF67B5 /* SearchResultCell.swift */; };
 		A84A48EA2991926F00DF67B5 /* SquareCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84A48E92991926F00DF67B5 /* SquareCell.swift */; };
+		A85FA3CB2996C7F200BAB4A9 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FA3CA2996C7F200BAB4A9 /* Error.swift */; };
 		A8B6BB6F2994ECE100A2AC1A /* BeerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6BB6E2994ECE100A2AC1A /* BeerAPI.swift */; };
 		A8B6BB722994ED0400A2AC1A /* BeerAPIImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6BB712994ED0400A2AC1A /* BeerAPIImpl.swift */; };
 		A8B6BB742994ED9B00A2AC1A /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6BB732994ED9B00A2AC1A /* Beer.swift */; };
@@ -87,6 +88,7 @@
 		A84A48E5299065D700DF67B5 /* appstore.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = appstore.json; sourceTree = "<group>"; };
 		A84A48E729906F0E00DF67B5 /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		A84A48E92991926F00DF67B5 /* SquareCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareCell.swift; sourceTree = "<group>"; };
+		A85FA3CA2996C7F200BAB4A9 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		A8B6BB6E2994ECE100A2AC1A /* BeerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerAPI.swift; sourceTree = "<group>"; };
 		A8B6BB712994ED0400A2AC1A /* BeerAPIImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerAPIImpl.swift; sourceTree = "<group>"; };
 		A8B6BB732994ED9B00A2AC1A /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 				A8B6BB6E2994ECE100A2AC1A /* BeerAPI.swift */,
 				A8B6BB712994ED0400A2AC1A /* BeerAPIImpl.swift */,
 				A8B6BB7D2995BE5E00A2AC1A /* Endpoint.swift */,
+				A85FA3CA2996C7F200BAB4A9 /* Error.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				A8B6BB6F2994ECE100A2AC1A /* BeerAPI.swift in Sources */,
 				A84A48DF299059EB00DF67B5 /* SelfConfigureCell.swift in Sources */,
 				A84A48D12990584600DF67B5 /* App.swift in Sources */,
+				A85FA3CB2996C7F200BAB4A9 /* Error.swift in Sources */,
 				A82B8FA5298D6C88002E6FA6 /* SceneDelegate.swift in Sources */,
 				A82B8FAC298D728F002E6FA6 /* MainTabBarController.swift in Sources */,
 				A84A48E829906F0E00DF67B5 /* SearchResultCell.swift in Sources */,

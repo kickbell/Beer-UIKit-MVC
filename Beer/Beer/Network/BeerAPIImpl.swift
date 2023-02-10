@@ -56,7 +56,17 @@ class BeerAPIImpl: BeerAPI {
 
 
 
+
+
+
 extension URLSession {
+    
+    enum NetworkError: Error {
+        case notValidateStatusCode  // 유효하지 않는 StatusCode
+        case noData                 // 결과 데이터 미존재
+        case failDecode             // Decode 실패
+    }
+    
     typealias Handler = (Data?, URLResponse?, Error?) -> Void
 
     @discardableResult
