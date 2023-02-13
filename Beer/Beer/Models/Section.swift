@@ -22,8 +22,11 @@ extension Section {
         case featured
         case none
     }
-    
+
     var appType: AppType {
         return AppType(rawValue: self.type) ?? .none
     }
 }
+
+
+

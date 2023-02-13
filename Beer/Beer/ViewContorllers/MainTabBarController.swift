@@ -32,7 +32,7 @@ class MainTabBarController: UITabBarController {
     }
     
     func configureViewControllers() {
-        let beerStore = UINavigationController(rootViewController: BeerStoreViewController())
+        let beerStore = UINavigationController(rootViewController: BeerStoreViewController(service: MoviesService()))
         let beerStoreItem = UITabBarItem(title: "스토어", image: UIImage(systemName: "cart"), selectedImage: UIImage(systemName: "cart.fill"))
         beerStore.tabBarItem = beerStoreItem
         

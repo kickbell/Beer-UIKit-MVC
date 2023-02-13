@@ -17,9 +17,9 @@ class DetailViewController: UITabBarController {
     let moveButton = UIButton(type: .custom)
     let emptyView = UIView()
     var stackView = UIStackView()
-    let app: App
+    let app: Movie
     
-    init(with app: App) {
+    init(with app: Movie) {
         self.app = app
         super.init(nibName: nil, bundle: nil)
     }
@@ -94,12 +94,12 @@ class DetailViewController: UITabBarController {
         stackView.setCustomSpacing(50, after: withFood)
     }
     
-    func configure(with app: App) {
-        imageView.image = UIImage(named: app.image)
-        name.text = app.name
-        subtitle.text = app.subheading + app.subheading + app.subheading
-        desc.text = app.tagline
-        withFood.text = app.image + ", " + app.image + ", " + app.image + ", " + app.image
+    func configure(with app: Movie) {
+//        imageView.image = UIImage(named: app.image)
+//        name.text = app.name
+//        subtitle.text = app.subheading + app.subheading + app.subheading
+//        desc.text = app.tagline
+//        withFood.text = app.image + ", " + app.image + ", " + app.image + ", " + app.image
     }
     
     @objc func move() {

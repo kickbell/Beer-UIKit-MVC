@@ -73,10 +73,30 @@ class SearchResultCell: UITableViewCell, ConfigureView, SelfConfigureCell {
         ])
     }
     
-    func configure(with app: App) {
-        tagline.text = app.tagline
-        name.text = app.name
-        desc.text = app.subheading + app.subheading + app.subheading
-        image.image = UIImage(named: app.image)
+    func configure(with app: Movie) {
+        tagline.text = app.releaseDate
+        name.text = app.originalTitle
+        desc.text = app.overview
+        image.load(urlStr: imagePath + app.backdropPath)
+    }
+}
+
+
+var imagePath = "https://image.tmdb.org/t/p/w500"
+extension UIImageView {
+    func load(urlStr: String) {
+        guard let url = URL(string: urlStr) else {
+            print("invalid url...")
+            return
+        }
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
+                }
+            }
+        }
     }
 }

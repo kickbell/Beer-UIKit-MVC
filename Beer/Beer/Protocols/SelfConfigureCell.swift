@@ -8,6 +8,6 @@
 import Foundation
 
 protocol SelfConfigureCell {
-    func configure(with app: App)
+    func configure(with app: Movie)
 }
 

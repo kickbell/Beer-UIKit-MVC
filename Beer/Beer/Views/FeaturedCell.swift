@@ -70,10 +70,10 @@ class FeaturedCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         stackView.setCustomSpacing(10, after: subtitle)
     }
     
-    func configure(with app: App) {
-        tagline.text = app.tagline.uppercased()
-        name.text = app.name
-        subtitle.text = app.subheading
-        imageView.image = UIImage(named: app.image)
+    func configure(with app: Movie) {
+        tagline.text = app.releaseDate
+        name.text = app.originalTitle
+        subtitle.text = app.overview
+        imageView.load(urlStr: imagePath + app.backdropPath)
     }
 }

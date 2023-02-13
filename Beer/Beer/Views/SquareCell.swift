@@ -56,9 +56,9 @@ class SquareCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         ])
     }
     
-    func configure(with app: App) {
-        name.text = app.name
-        subtitle.text = app.subheading
-        imageView.image = UIImage(named: app.image)
+    func configure(with app: Movie) {
+        name.text = app.originalTitle
+        subtitle.text = app.overview
+        imageView.load(urlStr: imagePath + app.backdropPath)
     }
 }

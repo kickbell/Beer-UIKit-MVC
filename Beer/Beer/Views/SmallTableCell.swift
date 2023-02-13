@@ -49,8 +49,8 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         ])
     }
     
-    func configure(with app: App) {
-        name.text = app.name
-        imageView.image = UIImage(named: app.image)
+    func configure(with app: Movie) {
+        name.text = app.originalTitle
+        imageView.load(urlStr: imagePath + app.backdropPath)
     }
 }
