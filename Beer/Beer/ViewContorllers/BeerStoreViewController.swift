@@ -21,9 +21,32 @@ class BeerStoreViewController: UIViewController {
         createDataSource()
         applyInitialSnapshot()
         
-        beerapi.search(for: 1)
+     
         
     }
+    
+    func asdf() async {
+        Task {
+            do {
+               let resposnse: [Beer] = try await beerapi.getData(from: .random)
+            } catch {
+               print(error.localizedDescription)
+            }
+        }
+        
+    }
+//
+//    func asdf() async -> [Beer] {
+//        do {
+//            let beers = try await beerapi.request(model: [Beer].self, from: .random)
+//            print(beers)
+//            return beers
+//        } catch {
+//            print(error.localizedDescription)
+//        }
+//        return []
+//    }
+    
     
     func addAttributes() {
         view.backgroundColor = .white
