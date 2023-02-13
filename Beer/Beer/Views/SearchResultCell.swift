@@ -77,7 +77,7 @@ class SearchResultCell: UITableViewCell, ConfigureView, SelfConfigureCell {
         tagline.text = app.releaseDate
         name.text = app.originalTitle
         desc.text = app.overview
-        image.load(urlStr: imagePath + app.backdropPath)
+        image.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }
 

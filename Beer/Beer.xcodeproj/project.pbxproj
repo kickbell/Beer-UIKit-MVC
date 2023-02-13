@@ -37,6 +37,7 @@
 		A85FA3D42999D4D700BAB4A9 /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FA3D32999D4D700BAB4A9 /* MoviesService.swift */; };
 		A85FA3D82999D53300BAB4A9 /* TopRated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FA3D72999D53300BAB4A9 /* TopRated.swift */; };
 		A85FA3DA2999D53E00BAB4A9 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FA3D92999D53E00BAB4A9 /* Movie.swift */; };
+		A85FA3DC2999FB1800BAB4A9 /* SearchMovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FA3DB2999FB1800BAB4A9 /* SearchMovieResult.swift */; };
 		A8B6BB7E2995BE5E00A2AC1A /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B6BB7D2995BE5E00A2AC1A /* Endpoint.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,7 @@
 		A85FA3D32999D4D700BAB4A9 /* MoviesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesService.swift; sourceTree = "<group>"; };
 		A85FA3D72999D53300BAB4A9 /* TopRated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopRated.swift; sourceTree = "<group>"; };
 		A85FA3D92999D53E00BAB4A9 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		A85FA3DB2999FB1800BAB4A9 /* SearchMovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMovieResult.swift; sourceTree = "<group>"; };
 		A8B6BB7D2995BE5E00A2AC1A /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -232,6 +234,7 @@
 				A84A48D02990584600DF67B5 /* App.swift */,
 				A85FA3D72999D53300BAB4A9 /* TopRated.swift */,
 				A85FA3D92999D53E00BAB4A9 /* Movie.swift */,
+				A85FA3DB2999FB1800BAB4A9 /* SearchMovieResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -437,6 +440,7 @@
 				A85FA3CD2999D3A100BAB4A9 /* HttpMethod.swift in Sources */,
 				A84A48D52990585600DF67B5 /* ThreeTableCell.swift in Sources */,
 				A82B8FAE298D983B002E6FA6 /* DetailViewController.swift in Sources */,
+				A85FA3DC2999FB1800BAB4A9 /* SearchMovieResult.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

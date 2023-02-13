@@ -74,6 +74,6 @@ class FeaturedCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         tagline.text = app.releaseDate
         name.text = app.originalTitle
         subtitle.text = app.overview
-        imageView.load(urlStr: imagePath + app.backdropPath)
+        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }

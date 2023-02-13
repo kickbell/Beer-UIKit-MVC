@@ -66,6 +66,6 @@ class ThreeTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     func configure(with app: Movie) {
         name.text = app.originalTitle
         subtitle.text = app.overview
-        imageView.load(urlStr: imagePath + app.backdropPath)
+        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }

@@ -8,12 +8,30 @@
 import UIKit
 
 class BeerStoreViewController: UIViewController {
-    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
+    
+    // MARK: Views
+
+//    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
     var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-    var dataSource: UICollectionViewDiffableDataSource<Section, App>?
     
-    let beerapi = BeerAPIImpl(session: URLSession.shared)
+    // MARK: Properties
+
+    var dataSource: UICollectionViewDiffableDataSource<TopRated, Movie>?
+    private(set) var sections: [TopRated] = []
+    private(set) var movies: [Movie] = []
+    private let service: MoviesServiceable
     
+    // MARK: LifeCycle
+
+    init(service: MoviesServiceable) {
+        self.service = service
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) is not supported")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         addAttributes()
@@ -21,32 +39,45 @@ class BeerStoreViewController: UIViewController {
         createDataSource()
         applyInitialSnapshot()
         
-     
+     loadTableView()
         
     }
     
-    func asdf() async {
-        Task {
-            do {
-               let resposnse: [Beer] = try await beerapi.getData(from: .random)
-            } catch {
-               print(error.localizedDescription)
+    // MARK: Methods
+    
+    private func fetchData(completion: @escaping (Result<TopRated, RequestError>) -> Void) {
+        Task(priority: .background) {
+            let result = await service.getTopRated()
+            completion(result)
+        }
+    }
+    
+    func loadTableView(completion: (() -> Void)? = nil) {
+        fetchData { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+//                self.movies = response.results
+                self.sections = [response]
+//                print(self.sections, "###")
+                self.createDataSource()
+                self.applyInitialSnapshot()
+//                print(self.movies)
+//                self.tableView.reloadData()
+//                self.collectionView.reloadData()
+                completion?()
+            case .failure(let error):
+                self.showModal(title: "Error", message: error.customMessage)
+                completion?()
             }
         }
-        
     }
-//
-//    func asdf() async -> [Beer] {
-//        do {
-//            let beers = try await beerapi.request(model: [Beer].self, from: .random)
-//            print(beers)
-//            return beers
-//        } catch {
-//            print(error.localizedDescription)
-//        }
-//        return []
-//    }
     
+    private func showModal(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
     func addAttributes() {
         view.backgroundColor = .white
@@ -64,8 +95,8 @@ class BeerStoreViewController: UIViewController {
         view.addSubview(collectionView)
     }
     
-    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, App>{
-        return UICollectionView.CellRegistration<T, App> { (cell, indexPath, app) in cell.configure(with: app)
+    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Movie>{
+        return UICollectionView.CellRegistration<T, Movie> { (cell, indexPath, app) in cell.configure(with: app)
         }
     }
     
@@ -79,17 +110,19 @@ class BeerStoreViewController: UIViewController {
         let mediumTableCellRegistration = cellRegistration(ThreeTableCell.self)
         let sectionHeaderRegistration = sectionHeaderRegistration(SectionHeader.self)
         
-        dataSource = UICollectionViewDiffableDataSource<Section, App>(collectionView: collectionView) { collectionView, indexPath, app in
-            let section = self.sections[indexPath.section]
+        dataSource = UICollectionViewDiffableDataSource<TopRated, Movie>(collectionView: collectionView) { collectionView, indexPath, app in
+//            let section = self.sections[indexPath.section]
+//            let section = self.sections[indexPath.section]
             
-            switch section.appType {
-            case .mediumTable:
+            
+            switch indexPath.section {
+            case 0:
                 return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
-            case .smallTable:
+            case 1:
                 return collectionView.dequeueConfiguredReusableCell(using: smallTableCellRegistration, for: indexPath, item: app)
-            case .featured:
+            case 2:
                 return collectionView.dequeueConfiguredReusableCell(using: featuredCellRegistration, for: indexPath, item: app)
-            case .none:
+            default:
                 return UICollectionViewCell()
             }
         }
@@ -99,20 +132,20 @@ class BeerStoreViewController: UIViewController {
             
             guard let firstApp = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
             guard let section = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstApp) else { return nil }
-            if section.title.isEmpty { return nil }
+//            if section.title.isEmpty { return nil }
             
-            sectionHeader.title.text = section.title
-            sectionHeader.subtitle.text = section.subtitle
+            sectionHeader.title.text = "title"
+            sectionHeader.subtitle.text = "subtitle"
             return sectionHeader
         }
     }
     
     func applyInitialSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, App>()
+        var snapshot = NSDiffableDataSourceSnapshot<TopRated, Movie>()
         snapshot.appendSections(sections)
         
         for section in sections {
-            snapshot.appendItems(section.items, toSection: section)
+            snapshot.appendItems(section.results, toSection: section)
         }
         
         dataSource?.apply(snapshot)
@@ -120,15 +153,15 @@ class BeerStoreViewController: UIViewController {
     
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-            let section = self.sections[sectionIndex]
+//            let section = self.movies[sectionIndex]
             
-            switch section.appType {
-            case .mediumTable:
-                return self.createMediumTableSection(using: section)
-            case .smallTable:
-                return self.createSmallTableSection(using: section)
+            switch sectionIndex {
+            case 0:
+                return self.createMediumTableSection()
+            case 1:
+                return self.createSmallTableSection()
             default:
-                return self.createFeaturedSection(using: section)
+                return self.createFeaturedSection()
             }
         }
         
@@ -138,7 +171,7 @@ class BeerStoreViewController: UIViewController {
         return layout
     }
     
-    func createFeaturedSection(using section: Section) -> NSCollectionLayoutSection {
+    func createFeaturedSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -151,7 +184,7 @@ class BeerStoreViewController: UIViewController {
         return layoutSection
     }
     
-    func createMediumTableSection(using section: Section) -> NSCollectionLayoutSection {
+    func createMediumTableSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.33))
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -167,7 +200,7 @@ class BeerStoreViewController: UIViewController {
         return layoutSection
     }
     
-    func createSmallTableSection(using section: Section) -> NSCollectionLayoutSection {
+    func createSmallTableSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2))
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)

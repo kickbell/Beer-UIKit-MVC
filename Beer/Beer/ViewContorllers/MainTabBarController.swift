@@ -36,7 +36,7 @@ class MainTabBarController: UITabBarController {
         let beerStoreItem = UITabBarItem(title: "스토어", image: UIImage(systemName: "cart"), selectedImage: UIImage(systemName: "cart.fill"))
         beerStore.tabBarItem = beerStoreItem
         
-        let search = UINavigationController(rootViewController: SearchBeerViewController())
+        let search = UINavigationController(rootViewController: SearchBeerViewController(service: MoviesService()))
         let searchItem = UITabBarItem(title: "검색", image: UIImage(systemName: "magnifyingglass"), selectedImage: nil)
         search.tabBarItem = searchItem
         

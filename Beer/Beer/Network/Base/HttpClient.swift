@@ -20,6 +20,7 @@ extension HTTPClient {
         urlComponents.scheme = endpoint.scheme
         urlComponents.host = endpoint.host
         urlComponents.path = endpoint.path
+        urlComponents.queryItems = endpoint.queryItems
         
         guard let url = urlComponents.url else {
             return .failure(.invalidURL)
@@ -32,6 +33,9 @@ extension HTTPClient {
         if let body = endpoint.body {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         }
+        
+        
+        
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
