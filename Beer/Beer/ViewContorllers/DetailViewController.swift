@@ -72,7 +72,6 @@ class DetailViewController: UITabBarController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
-        
     }
     
     func addSubviews() {

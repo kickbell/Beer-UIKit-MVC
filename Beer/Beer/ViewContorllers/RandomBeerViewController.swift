@@ -7,180 +7,141 @@
 
 import UIKit
 
-class RandomBeerViewController: UIViewController {
 
-//    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
-//    var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-//    var dataSource: UICollectionViewDiffableDataSource<Section, App>?
-//
+class RandomBeerViewController: UITabBarController {
+    let imageView = UIImageView()
+    let largeTitle = UILabel()
+    let shuffleButton = UIButton()
+    let subtitle = UILabel()
+    let name = UILabel()
+    let info = UILabel()
+    let overview = UILabel()
+    let moveButton = UIButton(type: .custom)
+    let emptyView = UIView()
+    var innerStackView = UIStackView()
+    var outerStackView = UIStackView()
+    let id: Int = 299536
+    let service: MoviesServiceable
+    var trending: [Movie] = []
+    var posterPath: String?
+    
+    // MARK: LifeCycle
+    
+    init(service: MoviesServiceable) {
+        self.service = service
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-//        addAttributes()
-//        addSubviews()
-//        createDataSource()
-//        applyInitialSnapshot()
+        addAttributes()
+        addSubviews()
+        addConstraints()
+        loadTableView()
     }
-//
-//    func addAttributes() {
-//        view.backgroundColor = .white
-//
-//        title = "랜덤"
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//
-//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
-//        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        collectionView.backgroundColor = .systemBackground
-//        collectionView.delegate = self
-//    }
-//
-//    func addSubviews() {
-//        view.addSubview(collectionView)
-//    }
-//
-//    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, App>{
-//        return UICollectionView.CellRegistration<T, App> { (cell, indexPath, app) in cell.configure(with: app)
-//        }
-//    }
-//
-//    func createListCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, App> {
-//        return UICollectionView.CellRegistration<UICollectionViewListCell, App> { (cell, indexPath, app) in
-//            var content = UIListContentConfiguration.valueCell()
-//            content.image = UIImage(named: app.image)
-//            content.text = app.name
-//            content.secondaryText = "\(Int.random(in: 1...50))"
-//            cell.contentConfiguration = content
-//            cell.accessories = [UICellAccessory.disclosureIndicator()]
-//        }
-//    }
-//
-//    func sectionHeaderRegistration<T: UICollectionReusableView>(_ viewType: T.Type) -> UICollectionView.SupplementaryRegistration<T>{
-//        return UICollectionView.SupplementaryRegistration<T>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView,elementKind,indexPath in }
-//    }
-//
-//    func createDataSource() {
-//        let featuredCellRegistration = cellRegistration(FeaturedCell.self)
-//        let smallTableCellRegistration = createListCellRegistration()
-//        let mediumTableCellRegistration = cellRegistration(SquareCell.self)
-//        let sectionHeaderRegistration = sectionHeaderRegistration(SectionHeader.self)
-//
-//        dataSource = UICollectionViewDiffableDataSource<Section, App>(collectionView: collectionView) { collectionView, indexPath, app in
-//            let section = self.sections[indexPath.section]
-//
-//            switch section.appType {
-//            case .mediumTable:
-//                return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
-//            case .smallTable:
-//                return collectionView.dequeueConfiguredReusableCell(using: smallTableCellRegistration, for: indexPath, item: app)
-//            case .featured:
-//                return collectionView.dequeueConfiguredReusableCell(using: featuredCellRegistration, for: indexPath, item: app)
-//            case .none:
-//                return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
-//            }
-//        }
-//
-//        dataSource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
-//            let sectionHeader = collectionView.dequeueConfiguredReusableSupplementary(using: sectionHeaderRegistration, for: indexPath)
-//
-//            guard let firstApp = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
-//            guard let section = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstApp) else { return nil }
-//            if section.title.isEmpty { return nil }
-//            sectionHeader.title.text = section.title
-//            sectionHeader.subtitle.text = section.subtitle
-//            sectionHeader.accessoryButton.isHidden = false
-//            sectionHeader.accessoryButtonDidTap = {
-//                print("accessoryButtonDidTap...")
-//            }
-//            return sectionHeader
-//        }
-//    }
-//
-//    func applyInitialSnapshot() {
-//        var snapshot = NSDiffableDataSourceSnapshot<Section, App>()
-//        snapshot.appendSections(sections)
-//
-//        for section in sections {
-//            snapshot.appendItems(section.items, toSection: section)
-//        }
-//
-//        dataSource?.apply(snapshot)
-//    }
-//
-//    func createCompositionalLayout() -> UICollectionViewLayout {
-//        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-//            let section = self.sections[sectionIndex]
-//
-//            switch section.appType {
-//            case .mediumTable:
-//                return self.createMediumTableSection(using: section)
-//            case .smallTable:
-//                return self.createSmallTableSection(using: section, layoutEnvironment: layoutEnvironment)
-//            default:
-//                return self.createFeaturedSection(using: section)
-//            }
-//        }
-//
-//        let config = UICollectionViewCompositionalLayoutConfiguration()
-//        config.interSectionSpacing = 20
-//        layout.configuration = config
-//        return layout
-//    }
-//
-//    func createFeaturedSection(using section: Section) -> NSCollectionLayoutSection {
-//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-//
-//        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
-//        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(350))
-//        let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
-//
-//        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-//        layoutSection.orthogonalScrollingBehavior = .groupPagingCentered
-//        return layoutSection
-//    }
-//
-//    func createMediumTableSection(using section: Section) -> NSCollectionLayoutSection {
-//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
-//
-//        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-//
-//        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(0.5))
-//        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
-//
-//        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-//        layoutSection.orthogonalScrollingBehavior = .groupPaging
-//        let layoutSectionHeader = createSectionHeader()
-//        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
-//        return layoutSection
-//    }
-//
-//    func createSmallTableSection(using section: Section, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
-//
-//        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-//        configuration.backgroundColor = .white
-//        let layoutSection = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
-//
-//        let layoutSectionHeader = createSectionHeader()
-//        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
-//
-//        return layoutSection
-//    }
-//
-//    func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-//        let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
-//        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-//        return layoutSectionHeader
-//    }
-//}
-//
-//extension RandomBeerViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        guard let app = self.dataSource?.itemIdentifier(for: indexPath) else {
-//            collectionView.deselectItem(at: indexPath, animated: true)
-//            return
-//        }
-//        let detailViewController = DetailViewController(with: app)
-//        self.navigationController?.pushViewController(detailViewController, animated: true)
-//    }
+    
+    func addAttributes() {
+        view.backgroundColor = .white
+        
+        largeTitle.text = "트렌드"
+        largeTitle.font = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 34, weight: .heavy))
+        
+        shuffleButton.setImage(UIImage(systemName: "shuffle", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 25))), for: .normal)
+        shuffleButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
+        
+        subtitle.font = UIFont.preferredFont(forTextStyle: .body)
+        subtitle.text = "최근 24시간 동안 트렌드 리스트의 영화를 랜덤으로 나타냅니다. 우측 버튼으로 새로고침 할 수 있습니다."
+        subtitle.numberOfLines = 0
+        subtitle.textColor = .secondaryLabel
+        
+        imageView.layer.cornerRadius = 5
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        name.font = UIFont.preferredFont(forTextStyle: .title3)
+        name.textColor = .label
+        
+        info.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        info.textColor = .label
+        
+        overview.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        overview.textColor = .secondaryLabel
+        overview.numberOfLines = 0
+        
+        moveButton.setTitle("포스터 보러가기", for: .normal)
+        moveButton.setTitleColor(.white, for: .normal)
+        moveButton.backgroundColor = .systemBlue
+        moveButton.addTarget(self, action: #selector(open), for: .touchUpInside)
+        
+        innerStackView = UIStackView(arrangedSubviews: [largeTitle, shuffleButton])
+        innerStackView.axis = .horizontal
+        
+        outerStackView = UIStackView(arrangedSubviews: [innerStackView, subtitle, imageView, name, info, overview, moveButton, emptyView])
+        outerStackView.translatesAutoresizingMaskIntoConstraints = false
+        outerStackView.spacing = 10
+        outerStackView.axis = .vertical
+    }
+    
+    func addSubviews() {
+        view.addSubview(outerStackView)
+    }
+    
+    func addConstraints() {
+        emptyView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        
+        NSLayoutConstraint.activate([
+            moveButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            outerStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            outerStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            outerStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            outerStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        outerStackView.setCustomSpacing(20, after: imageView)
+        outerStackView.setCustomSpacing(20, after: overview)
+    }
+    
+    private func fetchData(completion: @escaping (Result<TrendingMovieResult, RequestError>) -> Void) {
+        Task(priority: .background) {
+            let result = await service.trending()
+            completion(result)
+        }
+    }
+    
+    func loadTableView(completion: (() -> Void)? = nil) {
+        fetchData { response in
+            switch response {
+            case .success(let trending):
+                self.trending = trending.results
+                self.configure(with: trending.results[0])
+                self.posterPath = trending.results[0].posterPath
+            case .failure(let error):
+                self.showModal(title: "Error", message: error.customMessage)
+            }
+            completion?()
+        }
+    }
+    
+    func configure(with movie: Movie) {
+        imageView.load(urlStr: imagePath + (movie.backdropPath ?? ""))
+        name.text = movie.title
+        info.text = "| ⭐️\(movie.voteAverage) | \(movie.releaseDate) |"
+        overview.text = movie.overview
+        posterPath = movie.posterPath
+    }
+    
+    @objc func open() {
+        if let url = URL(string: imagePath + (posterPath ?? "")) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    @objc func refresh() {
+        configure(with: trending.shuffled()[0])
+    }
 }

@@ -40,8 +40,8 @@ class MainTabBarController: UITabBarController {
         let searchItem = UITabBarItem(title: "검색", image: UIImage(systemName: "magnifyingglass"), selectedImage: nil)
         search.tabBarItem = searchItem
         
-        let randomBeer = UINavigationController(rootViewController: RandomBeerViewController())
-        let randomBeerItem = UITabBarItem(title: "랜덤", image: UIImage(systemName: "shuffle"), selectedImage: UIImage(systemName: "shuffle.fill"))
+        let randomBeer = UINavigationController(rootViewController: RandomBeerViewController(service: MoviesService()))
+        let randomBeerItem = UITabBarItem(title: "트렌드", image: UIImage(systemName: "shuffle"), selectedImage: UIImage(systemName: "shuffle.fill"))
         randomBeer.tabBarItem = randomBeerItem
         
         self.viewControllers = [beerStore, search, randomBeer]

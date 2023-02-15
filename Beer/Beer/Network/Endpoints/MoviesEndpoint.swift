@@ -14,6 +14,7 @@ enum MoviesEndpoint {
     case genre
     case search(query: String)
     case movieDetail(id: Int)
+    case trending
 }
 
 extension MoviesEndpoint: Endpoint {
@@ -31,6 +32,8 @@ extension MoviesEndpoint: Endpoint {
             return "/3/search/movie"
         case .movieDetail(let id):
             return "/3/movie/\(id)"
+        case .trending:
+            return "/3/trending/movie/day"
         }
     }
 

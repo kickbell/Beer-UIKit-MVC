@@ -12,6 +12,7 @@
 		A8146D29299B5DA90080D108 /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D28299B5DA90080D108 /* Genre.swift */; };
 		A8146D2B299C40350080D108 /* UpcomingMovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D2A299C40350080D108 /* UpcomingMovieResult.swift */; };
 		A8146D2D299C798E0080D108 /* MovieDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D2C299C798E0080D108 /* MovieDetail.swift */; };
+		A8146D2F299C8CB70080D108 /* TrendingMovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D2E299C8CB70080D108 /* TrendingMovieResult.swift */; };
 		A82B8F5729892A64002E6FA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82B8F5629892A64002E6FA6 /* AppDelegate.swift */; };
 		A82B8F5B29892A64002E6FA6 /* BeerStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82B8F5A29892A64002E6FA6 /* BeerStoreViewController.swift */; };
 		A82B8F6029892A67002E6FA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A82B8F5F29892A67002E6FA6 /* Assets.xcassets */; };
@@ -69,6 +70,7 @@
 		A8146D28299B5DA90080D108 /* Genre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
 		A8146D2A299C40350080D108 /* UpcomingMovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingMovieResult.swift; sourceTree = "<group>"; };
 		A8146D2C299C798E0080D108 /* MovieDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetail.swift; sourceTree = "<group>"; };
+		A8146D2E299C8CB70080D108 /* TrendingMovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingMovieResult.swift; sourceTree = "<group>"; };
 		A82B8F5329892A64002E6FA6 /* Beer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A82B8F5629892A64002E6FA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A82B8F5A29892A64002E6FA6 /* BeerStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerStoreViewController.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				A8146D26299B5CD40080D108 /* GenreMovieResult.swift */,
 				A8146D2A299C40350080D108 /* UpcomingMovieResult.swift */,
 				A85FA3DB2999FB1800BAB4A9 /* SearchMovieResult.swift */,
+				A8146D2E299C8CB70080D108 /* TrendingMovieResult.swift */,
 				A85FA3D92999D53E00BAB4A9 /* Movie.swift */,
 				A8146D2C299C798E0080D108 /* MovieDetail.swift */,
 				A8146D28299B5DA90080D108 /* Genre.swift */,
@@ -444,6 +447,7 @@
 				A8146D2B299C40350080D108 /* UpcomingMovieResult.swift in Sources */,
 				A85FA3DA2999D53E00BAB4A9 /* Movie.swift in Sources */,
 				A82B8FAC298D728F002E6FA6 /* MainTabBarController.swift in Sources */,
+				A8146D2F299C8CB70080D108 /* TrendingMovieResult.swift in Sources */,
 				A84A48E829906F0E00DF67B5 /* SearchResultCell.swift in Sources */,
 				A82B8F5B29892A64002E6FA6 /* BeerStoreViewController.swift in Sources */,
 				A84A48D72990585D00DF67B5 /* SmallTableCell.swift in Sources */,
