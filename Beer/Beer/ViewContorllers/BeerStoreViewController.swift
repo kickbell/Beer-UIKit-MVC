@@ -10,19 +10,12 @@ import UIKit
 class BeerStoreViewController: UIViewController {
     
     // MARK: Views
-    
-    //    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
     var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     // MARK: Properties
     
     var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
-//    private(set) var populars: [Movie] = []
-//    private(set) var topRateds: [Movie] = []
-//    private(set) var genres: [Genre] = []
-    
     private(set) var fetchResult: FetchResult?
-    
     private let service: MoviesServiceable
     
     // MARK: LifeCycle
@@ -81,19 +74,12 @@ class BeerStoreViewController: UIViewController {
         }
     }
     
-
-    
     func loadTableView(completion: (() -> Void)? = nil) {
         fetchData { response in
             self.fetchResult = response
-//            self.topRateds = response.topRated.results
-//            self.populars = response.popular.results
-//            self.genres = response.genre.genres
             completion?()
         }
     }
-    
-
     
     func addAttributes() {
         view.backgroundColor = .white
@@ -110,12 +96,6 @@ class BeerStoreViewController: UIViewController {
     func addSubviews() {
         view.addSubview(collectionView)
     }
-    
-//    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Item>{
-//        return UICollectionView.CellRegistration<T, Item> { (cell, indexPath, app) in
-//            cell.configure(with: app)
-//        }
-//    }
     
     func sectionHeaderRegistration<T: UICollectionReusableView>(_ viewType: T.Type) -> UICollectionView.SupplementaryRegistration<T>{
         return UICollectionView.SupplementaryRegistration<T>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView,elementKind,indexPath in }
@@ -172,8 +152,7 @@ class BeerStoreViewController: UIViewController {
 
             guard let firstApp = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
             guard let section = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstApp) else { return nil }
-            //            if section.title.isEmpty { return nil }
-
+            
             switch section {
             case .popular: return sectionHeader
             case .topRated:
@@ -199,15 +178,10 @@ class BeerStoreViewController: UIViewController {
             return
         }
         
-        
         let popularItems = result.popular.results.map { Item(popular: $0 )}
         let topRatedItems = result.topRated.results.map { Item(topRated: $0 )}
         let genreItems = result.genre.genres.map { Item(genre: $0 )}
         let upcomingItems = result.upcoming.results.map { Item(upcoming: $0 )}
-        
-//        let popularItems = populars.map { Item(popular: $0) }
-//        let topRatedItems = topRateds.map { Item(topRated: $0) }
-//        let genreItems = genres.map { Item(genre: $0) }
         snapshot.appendItems(popularItems, toSection: .popular)
         snapshot.appendItems(topRatedItems, toSection: .topRated)
         snapshot.appendItems(genreItems, toSection: .genre)
@@ -218,8 +192,6 @@ class BeerStoreViewController: UIViewController {
     
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-            //            let section = self.movies[sectionIndex]
-            
             guard let section = Section(rawValue: sectionIndex) else { fatalError("Unknown section") }
             switch section {
             case .popular:
@@ -256,7 +228,7 @@ class BeerStoreViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.33))
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 5, trailing: 5)
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0)
         
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .fractionalWidth(0.55))
         let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
@@ -271,7 +243,7 @@ class BeerStoreViewController: UIViewController {
     func createSmallTableSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2))
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0)
         
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(200))
         let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
@@ -287,17 +259,13 @@ class BeerStoreViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
 
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-//        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
-
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 10)
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 0)
 
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.46), heightDimension: .fractionalHeight(0.46))
         let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
-//        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
 
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         layoutSection.orthogonalScrollingBehavior = .continuous
-        layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
         let layoutSectionHeader = createSectionHeader()
         layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
         return layoutSection
@@ -309,7 +277,6 @@ class BeerStoreViewController: UIViewController {
         return layoutSectionHeader
     }
 }
-
 
 extension BeerStoreViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -323,6 +290,7 @@ extension BeerStoreViewController: UICollectionViewDelegate {
         case 0: movie = app.popular
         case 1: movie = app.topRated
         case 2: movie = app.upcoming
+        case 3: return
         default: break
         }
         
@@ -332,7 +300,6 @@ extension BeerStoreViewController: UICollectionViewDelegate {
     }
 
 }
-
 
 extension UIViewController {
     func showModal(title: String, message: String) {

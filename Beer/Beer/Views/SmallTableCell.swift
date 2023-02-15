@@ -11,6 +11,9 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     let name = UILabel()
     let imageView = UIImageView()
     private var stackView = UIStackView()
+    let emojis = [
+        "🤣", "🥃", "😎", "⌚️", "💯", "✅", "😀", "😂","🏈", "🚴‍♀️", "🎤", "🏔", "⛺️", "🏖", "🖥", "⌚️", "📱", "❤️", "☮️", "🦊", "🐝", "🐢", "🥃", "🍎", "🍑"
+    ]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,15 +27,14 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     }
     
     func addAttributes() {
-        name.font = UIFont.preferredFont(forTextStyle: .title2)
-        name.textColor = .label
+        name.font = UIFont.preferredFont(forTextStyle: .title3)
+        name.textColor = .secondaryLabel
         
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = .lightGray
         
-        stackView = UIStackView(arrangedSubviews: [name, imageView])
+        stackView = UIStackView(arrangedSubviews: [name])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
         stackView.spacing = 20
@@ -51,8 +53,6 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     }
         
     func configure(with app: Genre) {
-        name.text = app.name
-        imageView.image = UIImage(systemName: "trash")
-//        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
+        name.text = app.name + "  \(emojis.randomElement() ?? "")"
     }
 }

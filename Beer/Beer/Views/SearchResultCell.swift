@@ -90,7 +90,6 @@ extension UIImageView {
             print("invalid url...")
             return
         }
-        guard self.image == nil else { return }
         
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {
