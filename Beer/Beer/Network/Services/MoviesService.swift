@@ -8,21 +8,36 @@
 import Foundation
 
 protocol MoviesServiceable {
-    func getTopRated() async -> Result<TopRated, RequestError>
-    func getMovieDetail(id: Int) async -> Result<Movie, RequestError>
+    func popular() async -> Result<PopularMovieResult, RequestError>
+    func topRated() async -> Result<TopRatedResult, RequestError>
+    func upcoming() async -> Result<UpcomingMovieResult, RequestError>
+    func genre() async -> Result<GenreMovieResult, RequestError>
     func search(query: String) async -> Result<SearchMovieResult, RequestError>
+    func detail(id: Int) async -> Result<MovieDetail, RequestError>
 }
 
 struct MoviesService: HTTPClient, MoviesServiceable {
-    func getTopRated() async -> Result<TopRated, RequestError> {
-        return await sendRequest(endpoint: MoviesEndpoint.topRated, responseModel: TopRated.self)
+    func popular() async -> Result<PopularMovieResult, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.popular, responseModel: PopularMovieResult.self)
     }
     
-    func getMovieDetail(id: Int) async -> Result<Movie, RequestError> {
-        return await sendRequest(endpoint: MoviesEndpoint.movieDetail(id: id), responseModel: Movie.self)
+    func topRated() async -> Result<TopRatedResult, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.topRated, responseModel: TopRatedResult.self)
     }
     
+    func upcoming() async -> Result<UpcomingMovieResult, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.upcomming, responseModel: UpcomingMovieResult.self)
+    }
+    
+    func genre() async -> Result<GenreMovieResult, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.genre, responseModel: GenreMovieResult.self)
+    }
+
     func search(query: String) async -> Result<SearchMovieResult, RequestError> {
         return await sendRequest(endpoint: MoviesEndpoint.search(query: query), responseModel: SearchMovieResult.self)
+    }
+    
+    func detail(id: Int) async -> Result<MovieDetail, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.movieDetail(id: id), responseModel: MovieDetail.self)
     }
 }

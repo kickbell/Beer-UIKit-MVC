@@ -36,12 +36,14 @@ class FeaturedCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         name.font = UIFont.preferredFont(forTextStyle: .title2)
         name.textColor = .label
         
-        subtitle.font = UIFont.preferredFont(forTextStyle: .title2)
+        subtitle.font = UIFont.preferredFont(forTextStyle: .body)
+        subtitle.numberOfLines = 1
         subtitle.textColor = .secondaryLabel
         
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .lightGray
         
         stackView = UIStackView(arrangedSubviews: [separator, tagline, name, subtitle, imageView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,8 +74,8 @@ class FeaturedCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     
     func configure(with app: Movie) {
         tagline.text = app.releaseDate
-        name.text = app.originalTitle
-        subtitle.text = app.overview
+        name.text = app.title
+        subtitle.text = app.overview == "" ? "구매: \(app.voteCount), 평점: \(app.voteAverage)" : app.overview
         imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }

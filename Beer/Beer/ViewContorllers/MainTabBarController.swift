@@ -27,7 +27,7 @@ class MainTabBarController: UITabBarController {
     }
     
     func configureTabBar() {
-        self.tabBar.tintColor = .black
+        self.tabBar.tintColor = .label
         self.tabBar.barStyle = .default
     }
     

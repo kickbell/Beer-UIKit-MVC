@@ -27,6 +27,7 @@ class SquareCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
     func addAttributes() {
         imageView.layer.cornerRadius = 5
         imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .lightGray
         imageView.clipsToBounds = true
         
         name.font = UIFont.preferredFont(forTextStyle: .subheadline)
@@ -54,11 +55,19 @@ class SquareCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+        
+        stackView.setCustomSpacing(5, after: imageView)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        name.text = nil
+        imageView.image = nil
     }
     
     func configure(with app: Movie) {
-        name.text = app.originalTitle
-        subtitle.text = app.overview
+        name.text = app.title
+//        subtitle.text = app.overview
         imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }

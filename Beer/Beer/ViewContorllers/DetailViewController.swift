@@ -8,19 +8,23 @@
 import UIKit
 
 class DetailViewController: UITabBarController {
-    
     let imageView = UIImageView()
     let name = UILabel()
-    let subtitle = UILabel()
-    let desc = UILabel()
-    let withFood = UILabel()
+    let tagline = UILabel()
+    let info = UILabel()
+    let overview = UILabel()
     let moveButton = UIButton(type: .custom)
     let emptyView = UIView()
     var stackView = UIStackView()
-    let app: Movie
+    let id: Int
+    let service: MoviesServiceable
+    var posterPath: String?
     
-    init(with app: Movie) {
-        self.app = app
+    // MARK: LifeCycle
+    
+    init(service: MoviesServiceable, with id: Int) {
+        self.service = service
+        self.id = id
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,7 +37,7 @@ class DetailViewController: UITabBarController {
         addAttributes()
         addSubviews()
         addConstraints()
-        configure(with: app)
+        loadTableView()
     }
     
     func addAttributes() {
@@ -47,27 +51,24 @@ class DetailViewController: UITabBarController {
         imageView.clipsToBounds = true
         
         name.font = UIFont.preferredFont(forTextStyle: .title3)
-        name.textAlignment = .center
         name.textColor = .label
         
-        subtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        subtitle.textColor = .secondaryLabel
-        subtitle.numberOfLines = 0
+        tagline.font = UIFont.preferredFont(forTextStyle: .body)
+        tagline.textColor = .label
         
-        withFood.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        withFood.textColor = .secondaryLabel
-        withFood.numberOfLines = 0
+        info.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        info.textColor = .label
         
-        desc.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        desc.textColor = .secondaryLabel
-        desc.numberOfLines = 0
+        overview.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        overview.textColor = .secondaryLabel
+        overview.numberOfLines = 0
         
-        moveButton.setTitle("move image link", for: .normal)
+        moveButton.setTitle("포스터 보러가기", for: .normal)
         moveButton.setTitleColor(.white, for: .normal)
         moveButton.backgroundColor = .systemBlue
-        moveButton.addTarget(self, action: #selector(move), for: .touchUpInside)
+        moveButton.addTarget(self, action: #selector(open), for: .touchUpInside)
         
-        stackView = UIStackView(arrangedSubviews: [imageView, name, subtitle, desc, withFood, moveButton, emptyView])
+        stackView = UIStackView(arrangedSubviews: [imageView, name, tagline, info, overview, moveButton, emptyView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 10
         stackView.axis = .vertical
@@ -90,20 +91,41 @@ class DetailViewController: UITabBarController {
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
-        stackView.setCustomSpacing(50, after: imageView)
-        stackView.setCustomSpacing(50, after: withFood)
+        stackView.setCustomSpacing(20, after: imageView)
+        stackView.setCustomSpacing(20, after: overview)
     }
     
-    func configure(with app: Movie) {
-//        imageView.image = UIImage(named: app.image)
-//        name.text = app.name
-//        subtitle.text = app.subheading + app.subheading + app.subheading
-//        desc.text = app.tagline
-//        withFood.text = app.image + ", " + app.image + ", " + app.image + ", " + app.image
+    private func fetchData(completion: @escaping (Result<MovieDetail, RequestError>) -> Void) {
+        Task(priority: .background) {
+            let result = await service.detail(id: self.id)
+            completion(result)
+        }
     }
     
-    @objc func move() {
-        print("move...")
+    func loadTableView(completion: (() -> Void)? = nil) {
+        fetchData { response in
+            switch response {
+            case .success(let movieDetail):
+                self.configure(with: movieDetail)
+                self.posterPath = movieDetail.posterPath
+            case .failure(let error):
+                self.showModal(title: "Error", message: error.customMessage)
+            }
+            completion?()
+        }
     }
     
+    func configure(with movie: MovieDetail) {
+        imageView.load(urlStr: imagePath + (movie.backdropPath ?? ""))
+        name.text = movie.title
+        tagline.text = movie.tagline
+        info.text = "| ⭐️\(movie.voteAverage) | \(movie.releaseDate) | \(movie.runtime ?? 0)분 | \(movie.genres.map { $0.name }.joined(separator: ", ")) |"
+        overview.text = movie.overview
+    }
+    
+    @objc func open() {
+        if let url = URL(string: imagePath + (posterPath ?? "")) {
+            UIApplication.shared.open(url)
+        }
+    }
 }

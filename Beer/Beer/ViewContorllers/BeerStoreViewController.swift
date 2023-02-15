@@ -10,19 +10,23 @@ import UIKit
 class BeerStoreViewController: UIViewController {
     
     // MARK: Views
-
-//    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
+    
+    //    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
     var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     // MARK: Properties
-
-    var dataSource: UICollectionViewDiffableDataSource<TopRated, Movie>?
-    private(set) var sections: [TopRated] = []
-    private(set) var movies: [Movie] = []
+    
+    var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
+//    private(set) var populars: [Movie] = []
+//    private(set) var topRateds: [Movie] = []
+//    private(set) var genres: [Genre] = []
+    
+    private(set) var fetchResult: FetchResult?
+    
     private let service: MoviesServiceable
     
     // MARK: LifeCycle
-
+    
     init(service: MoviesServiceable) {
         self.service = service
         super.init(nibName: nil, bundle: nil)
@@ -31,7 +35,7 @@ class BeerStoreViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not supported")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addAttributes()
@@ -39,45 +43,57 @@ class BeerStoreViewController: UIViewController {
         createDataSource()
         applyInitialSnapshot()
         
-     loadTableView()
+        loadTableView {
+            self.createDataSource()
+            self.applyInitialSnapshot()
+        }
         
     }
     
     // MARK: Methods
     
-    private func fetchData(completion: @escaping (Result<TopRated, RequestError>) -> Void) {
-        Task(priority: .background) {
-            let result = await service.getTopRated()
-            completion(result)
-        }
+    struct FetchResult {
+        let topRated: TopRatedResult
+        let popular: PopularMovieResult
+        let genre: GenreMovieResult
+        let upcoming: UpcomingMovieResult
     }
     
-    func loadTableView(completion: (() -> Void)? = nil) {
-        fetchData { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-//                self.movies = response.results
-                self.sections = [response]
-//                print(self.sections, "###")
-                self.createDataSource()
-                self.applyInitialSnapshot()
-//                print(self.movies)
-//                self.tableView.reloadData()
-//                self.collectionView.reloadData()
-                completion?()
-            case .failure(let error):
-                self.showModal(title: "Error", message: error.customMessage)
-                completion?()
+    private func fetchData(completion: @escaping (FetchResult) -> Void) {
+        Task(priority: .background) {
+            let tapRated = await service.topRated()
+            let popular = await service.popular()
+            let genre = await service.genre()
+            let upcoming = await service.upcoming()
+            
+            do {
+                let t = try tapRated.get()
+                let p = try popular.get()
+                let g = try genre.get()
+                let u = try upcoming.get()
+            
+                let result = FetchResult(topRated: t, popular: p, genre: g, upcoming: u)
+                completion(result)
+            } catch {
+                showModal(title: "Error", message: error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
     }
     
-    private func showModal(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+
+    
+    func loadTableView(completion: (() -> Void)? = nil) {
+        fetchData { response in
+            self.fetchResult = response
+//            self.topRateds = response.topRated.results
+//            self.populars = response.popular.results
+//            self.genres = response.genre.genres
+            completion?()
+        }
     }
+    
+
     
     func addAttributes() {
         view.backgroundColor = .white
@@ -95,73 +111,125 @@ class BeerStoreViewController: UIViewController {
         view.addSubview(collectionView)
     }
     
-    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Movie>{
-        return UICollectionView.CellRegistration<T, Movie> { (cell, indexPath, app) in cell.configure(with: app)
-        }
-    }
+//    func cellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Item>{
+//        return UICollectionView.CellRegistration<T, Item> { (cell, indexPath, app) in
+//            cell.configure(with: app)
+//        }
+//    }
     
     func sectionHeaderRegistration<T: UICollectionReusableView>(_ viewType: T.Type) -> UICollectionView.SupplementaryRegistration<T>{
         return UICollectionView.SupplementaryRegistration<T>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView,elementKind,indexPath in }
     }
     
+    func createFeaturedCellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Movie> {
+        return UICollectionView.CellRegistration<T, Movie> { (cell, indexPath, app) in
+            cell.configure(with: app as! T.Item)
+        }
+    }
+    
+    func createMediumTableCellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Movie> {
+        return UICollectionView.CellRegistration<T, Movie> { (cell, indexPath, app) in
+            cell.configure(with: app as! T.Item)
+        }
+    }
+    
+    func createSmallTableCellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Genre> {
+        return UICollectionView.CellRegistration<T, Genre> { (cell, indexPath, app) in
+            cell.configure(with: app as! T.Item)
+        }
+    }
+    
+    func createSquareCellRegistration<T: SelfConfigureCell> (_ cellType: T.Type) -> UICollectionView.CellRegistration<T, Movie> {
+        return UICollectionView.CellRegistration<T, Movie> { (cell, indexPath, app) in
+            cell.configure(with: app as! T.Item)
+        }
+    }
+    
     func createDataSource() {
-        let featuredCellRegistration = cellRegistration(FeaturedCell.self)
-        let smallTableCellRegistration = cellRegistration(SmallTableCell.self)
-        let mediumTableCellRegistration = cellRegistration(ThreeTableCell.self)
         let sectionHeaderRegistration = sectionHeaderRegistration(SectionHeader.self)
         
-        dataSource = UICollectionViewDiffableDataSource<TopRated, Movie>(collectionView: collectionView) { collectionView, indexPath, app in
-//            let section = self.sections[indexPath.section]
-//            let section = self.sections[indexPath.section]
-            
-            
-            switch indexPath.section {
-            case 0:
-                return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: app)
-            case 1:
-                return collectionView.dequeueConfiguredReusableCell(using: smallTableCellRegistration, for: indexPath, item: app)
-            case 2:
-                return collectionView.dequeueConfiguredReusableCell(using: featuredCellRegistration, for: indexPath, item: app)
-            default:
-                return UICollectionViewCell()
+        let featuredCellRegistration = createFeaturedCellRegistration(FeaturedCell.self)
+        let mediumTableCellRegistration = createMediumTableCellRegistration(ThreeTableCell.self)
+        let smallTableCellRegistration = createSmallTableCellRegistration(SmallTableCell.self)
+        let squareCellRegistration = createSquareCellRegistration(SquareCell.self)
+        
+        dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            guard let section = Section(rawValue: indexPath.section) else { fatalError("Unknown section") }
+            switch section {
+            case .popular:
+                return collectionView.dequeueConfiguredReusableCell(using: featuredCellRegistration, for: indexPath, item: item.popular)
+            case .topRated:
+                return collectionView.dequeueConfiguredReusableCell(using: mediumTableCellRegistration, for: indexPath, item: item.topRated)
+            case .genre:
+                return collectionView.dequeueConfiguredReusableCell(using: smallTableCellRegistration, for: indexPath, item: item.genre)
+            case .upcoming:
+                return collectionView.dequeueConfiguredReusableCell(using: squareCellRegistration, for: indexPath, item: item.upcoming)
             }
         }
         
         dataSource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
             let sectionHeader = collectionView.dequeueConfiguredReusableSupplementary(using: sectionHeaderRegistration, for: indexPath)
-            
+
             guard let firstApp = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
             guard let section = self?.dataSource?.snapshot().sectionIdentifier(containingItem: firstApp) else { return nil }
-//            if section.title.isEmpty { return nil }
-            
-            sectionHeader.title.text = "title"
-            sectionHeader.subtitle.text = "subtitle"
-            return sectionHeader
+            //            if section.title.isEmpty { return nil }
+
+            switch section {
+            case .popular: return sectionHeader
+            case .topRated:
+                sectionHeader.title.text = "HOT & NEW"
+                sectionHeader.subtitle.text = "최고 등급의 평점을 받은 영화입니다."
+                return sectionHeader
+            case .genre:
+                sectionHeader.title.text = "영화 카테고리"
+                return sectionHeader
+            case .upcoming:
+                sectionHeader.title.text = "UPCOMING"
+                return sectionHeader
+            }
         }
     }
     
     func applyInitialSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<TopRated, Movie>()
-        snapshot.appendSections(sections)
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections(Section.allCases)
         
-        for section in sections {
-            snapshot.appendItems(section.results, toSection: section)
+        guard let result = fetchResult else {
+            print("invalid fetchResult...")
+            return
         }
+        
+        
+        let popularItems = result.popular.results.map { Item(popular: $0 )}
+        let topRatedItems = result.topRated.results.map { Item(topRated: $0 )}
+        let genreItems = result.genre.genres.map { Item(genre: $0 )}
+        let upcomingItems = result.upcoming.results.map { Item(upcoming: $0 )}
+        
+//        let popularItems = populars.map { Item(popular: $0) }
+//        let topRatedItems = topRateds.map { Item(topRated: $0) }
+//        let genreItems = genres.map { Item(genre: $0) }
+        snapshot.appendItems(popularItems, toSection: .popular)
+        snapshot.appendItems(topRatedItems, toSection: .topRated)
+        snapshot.appendItems(genreItems, toSection: .genre)
+        snapshot.appendItems(upcomingItems, toSection: .upcoming)
         
         dataSource?.apply(snapshot)
     }
     
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-//            let section = self.movies[sectionIndex]
+            //            let section = self.movies[sectionIndex]
             
-            switch sectionIndex {
-            case 0:
-                return self.createMediumTableSection()
-            case 1:
-                return self.createSmallTableSection()
-            default:
+            guard let section = Section(rawValue: sectionIndex) else { fatalError("Unknown section") }
+            switch section {
+            case .popular:
                 return self.createFeaturedSection()
+            case .topRated:
+                return self.createMediumTableSection()
+            case .genre:
+                return self.createSmallTableSection()
+            case .upcoming:
+                return self.createSquareTableSection()
             }
         }
         
@@ -176,7 +244,7 @@ class BeerStoreViewController: UIViewController {
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
-        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(350))
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(300))
         let layoutGroup = NSCollectionLayoutGroup.horizontal(layoutSize: layoutGroupSize, subitems: [layoutItem])
         
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
@@ -188,7 +256,7 @@ class BeerStoreViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.33))
         
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 5, trailing: 5)
         
         let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .fractionalWidth(0.55))
         let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
@@ -215,6 +283,26 @@ class BeerStoreViewController: UIViewController {
         return layoutSection
     }
     
+    func createSquareTableSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
+
+        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
+//        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+
+        layoutItem.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 10)
+
+        let layoutGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.46), heightDimension: .fractionalHeight(0.46))
+        let layoutGroup = NSCollectionLayoutGroup.vertical(layoutSize: layoutGroupSize, subitems: [layoutItem])
+//        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+
+        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
+        layoutSection.orthogonalScrollingBehavior = .continuous
+        layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
+        let layoutSectionHeader = createSectionHeader()
+        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
+        return layoutSection
+    }
+    
     func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
         let layoutSectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.93), heightDimension: .estimated(80))
         let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: layoutSectionHeaderSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
@@ -229,7 +317,27 @@ extension BeerStoreViewController: UICollectionViewDelegate {
             collectionView.deselectItem(at: indexPath, animated: true)
             return
         }
-        let detailViewController = DetailViewController(with: app)
+        var movie: Movie?
+        
+        switch indexPath.section {
+        case 0: movie = app.popular
+        case 1: movie = app.topRated
+        case 2: movie = app.upcoming
+        default: break
+        }
+        
+        let detailViewController = DetailViewController(service: MoviesService(), with: movie?.id ?? 0)
+        detailViewController.navigationItem.largeTitleDisplayMode = .never
         self.navigationController?.pushViewController(detailViewController, animated: true)
+    }
+
+}
+
+
+extension UIViewController {
+    func showModal(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

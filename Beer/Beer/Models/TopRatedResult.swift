@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TopRated: Codable, Hashable {
+struct TopRatedResult: Codable, Hashable {
     let page: Int
     let totalPages: Int
     let totalResults: Int

@@ -35,13 +35,14 @@ class SearchResultCell: UITableViewCell, ConfigureView, SelfConfigureCell {
         name.font = UIFont.preferredFont(forTextStyle: .title2)
         name.textColor = .label
         
-        desc.font = UIFont.preferredFont(forTextStyle: .title3)
+        desc.font = UIFont.preferredFont(forTextStyle: .body)
         desc.textAlignment = .justified
-        desc.numberOfLines = 0
+        desc.numberOfLines = 3
         desc.textColor = .secondaryLabel
         
         image.layer.cornerRadius = 5
         image.clipsToBounds = true
+        image.backgroundColor = .lightGray
         image.contentMode = .scaleAspectFill
         
         innerStackView = UIStackView(arrangedSubviews: [tagline, name, desc])
@@ -75,7 +76,7 @@ class SearchResultCell: UITableViewCell, ConfigureView, SelfConfigureCell {
     
     func configure(with app: Movie) {
         tagline.text = app.releaseDate
-        name.text = app.originalTitle
+        name.text = app.title
         desc.text = app.overview
         image.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
@@ -89,6 +90,8 @@ extension UIImageView {
             print("invalid url...")
             return
         }
+        guard self.image == nil else { return }
+        
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {

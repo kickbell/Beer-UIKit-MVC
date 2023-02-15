@@ -34,6 +34,7 @@ class SectionHeader: UICollectionViewCell, ConfigureView {
         title.textColor = .label
         title.font = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 22, weight: .bold))
         subtitle.textColor = .secondaryLabel
+        subtitle.numberOfLines = 1
         
         innerStackView = UIStackView(arrangedSubviews: [separator, title, subtitle])
         innerStackView.axis = .vertical
@@ -64,7 +65,7 @@ class SectionHeader: UICollectionViewCell, ConfigureView {
             outerStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
         
-        outerStackView.setCustomSpacing(10, after: separator)
+        innerStackView.setCustomSpacing(10, after: separator)
     }
     
     @objc func tap() {

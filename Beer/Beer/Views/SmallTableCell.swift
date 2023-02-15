@@ -30,6 +30,7 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .lightGray
         
         stackView = UIStackView(arrangedSubviews: [name, imageView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,9 +49,10 @@ class SmallTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
-    func configure(with app: Movie) {
-        name.text = app.originalTitle
-        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
+        
+    func configure(with app: Genre) {
+        name.text = app.name
+        imageView.image = UIImage(systemName: "trash")
+//        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }
 }

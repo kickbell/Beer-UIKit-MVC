@@ -34,6 +34,8 @@ class ThreeTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         subtitle.textColor = .secondaryLabel
         
         imageView.layer.cornerRadius = 5
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .lightGray
         imageView.clipsToBounds = true
         
         buyButton.setImage(UIImage(systemName: "icloud.and.arrow.down"), for: .normal)
@@ -56,15 +58,17 @@ class ThreeTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         buyButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 80),
+            
             outerStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             outerStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             outerStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             outerStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
+        
     func configure(with app: Movie) {
-        name.text = app.originalTitle
+        name.text = app.title
         subtitle.text = app.overview
         imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
     }

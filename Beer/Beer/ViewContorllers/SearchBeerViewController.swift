@@ -61,13 +61,6 @@ class SearchBeerViewController: UIViewController {
             }
         }
     }
-    
-    private func showModal(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
 
     func addAttributes() {
         view.backgroundColor = .white
@@ -113,7 +106,7 @@ extension SearchBeerViewController: UITableViewDataSource {
 extension SearchBeerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let target = movies[indexPath.row]
-        let detailViewController = DetailViewController(with: target)
+        let detailViewController = DetailViewController(service: MoviesService(), with: target.id)
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

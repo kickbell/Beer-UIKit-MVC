@@ -8,18 +8,19 @@
 import UIKit
 
 class RandomBeerViewController: UIViewController {
-}
+
 //    let sections = Bundle.main.decode([Section].self, from: "appstore.json")
 //    var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
 //    var dataSource: UICollectionViewDiffableDataSource<Section, App>?
 //
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
 //        addAttributes()
 //        addSubviews()
 //        createDataSource()
 //        applyInitialSnapshot()
-//    }
+    }
 //
 //    func addAttributes() {
 //        view.backgroundColor = .white
@@ -182,4 +183,4 @@ class RandomBeerViewController: UIViewController {
 //        let detailViewController = DetailViewController(with: app)
 //        self.navigationController?.pushViewController(detailViewController, animated: true)
 //    }
-//}
+}
