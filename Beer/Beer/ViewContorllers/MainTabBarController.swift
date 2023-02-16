@@ -19,6 +19,16 @@ import UIKit
 //버튼있어서 클릭하면 이미지 웹뷰로 연결.
 
 
+//추가 구현해야 할 기능.
+
+//2. paging 처리
+//1. 이미지 캐싱처리
+//3. 테스트 코드
+
+//페이징으로 글하나 쓰자.
+//이미지 캐싱으로도 글하나쓰고?. wwdc 곁들여서.
+
+
 class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +51,7 @@ class MainTabBarController: UITabBarController {
         search.tabBarItem = searchItem
         
         let randomBeer = UINavigationController(rootViewController: RandomBeerViewController(service: MoviesService()))
-        let randomBeerItem = UITabBarItem(title: "트렌드", image: UIImage(systemName: "shuffle"), selectedImage: UIImage(systemName: "shuffle.fill"))
+        let randomBeerItem = UITabBarItem(title: "트렌드", image: UIImage(systemName: "t.circle"), selectedImage: UIImage(systemName: "t.circle.fill"))
         randomBeer.tabBarItem = randomBeerItem
         
         self.viewControllers = [beerStore, search, randomBeer]

@@ -49,6 +49,7 @@ class DetailViewController: UITabBarController {
         imageView.layer.cornerRadius = 5
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
         
         name.font = UIFont.preferredFont(forTextStyle: .title3)
         name.textColor = .label
@@ -57,6 +58,7 @@ class DetailViewController: UITabBarController {
         tagline.textColor = .label
         
         info.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        info.numberOfLines = 2
         info.textColor = .label
         
         overview.font = UIFont.preferredFont(forTextStyle: .subheadline)

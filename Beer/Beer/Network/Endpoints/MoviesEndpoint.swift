@@ -12,7 +12,7 @@ enum MoviesEndpoint {
     case topRated
     case upcomming
     case genre
-    case search(query: String)
+    case search(query: String, page: Int)
     case movieDetail(id: Int)
     case trending
 }
@@ -66,8 +66,9 @@ extension MoviesEndpoint: Endpoint {
         ]
         
         switch self {
-        case .search(query: let query):
+        case .search(query: let query, page: let page):
             queryItems.append(URLQueryItem(name: "query", value: query))
+            queryItems.append(URLQueryItem(name: "page", value: "\(page)"))
         case .movieDetail(id: let id):
             queryItems.append(URLQueryItem(name: "movie_id", value: "\(id)"))
         default: break

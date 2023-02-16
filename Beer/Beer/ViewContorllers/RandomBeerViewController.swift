@@ -50,7 +50,7 @@ class RandomBeerViewController: UITabBarController {
         largeTitle.text = "트렌드"
         largeTitle.font = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 34, weight: .heavy))
         
-        shuffleButton.setImage(UIImage(systemName: "shuffle", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 25))), for: .normal)
+        shuffleButton.setImage(UIImage(systemName: "arrow.clockwise", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 25))), for: .normal)
         shuffleButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
         
         subtitle.font = UIFont.preferredFont(forTextStyle: .body)

@@ -12,7 +12,7 @@ protocol MoviesServiceable {
     func topRated() async -> Result<TopRatedResult, RequestError>
     func upcoming() async -> Result<UpcomingMovieResult, RequestError>
     func genre() async -> Result<GenreMovieResult, RequestError>
-    func search(query: String) async -> Result<SearchMovieResult, RequestError>
+    func search(query: String, page: Int) async -> Result<SearchMovieResult, RequestError>
     func detail(id: Int) async -> Result<MovieDetail, RequestError>
     func trending() async -> Result<TrendingMovieResult, RequestError>
 }
@@ -34,8 +34,8 @@ struct MoviesService: HTTPClient, MoviesServiceable {
         return await sendRequest(endpoint: MoviesEndpoint.genre, responseModel: GenreMovieResult.self)
     }
 
-    func search(query: String) async -> Result<SearchMovieResult, RequestError> {
-        return await sendRequest(endpoint: MoviesEndpoint.search(query: query), responseModel: SearchMovieResult.self)
+    func search(query: String, page: Int) async -> Result<SearchMovieResult, RequestError> {
+        return await sendRequest(endpoint: MoviesEndpoint.search(query: query, page: page), responseModel: SearchMovieResult.self)
     }
     
     func detail(id: Int) async -> Result<MovieDetail, RequestError> {
