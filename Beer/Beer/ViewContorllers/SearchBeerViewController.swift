@@ -8,6 +8,7 @@
 import UIKit
 
 class SearchBeerViewController: UITableViewController, UISearchBarDelegate {
+    
     // MARK: Views
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -37,23 +38,21 @@ class SearchBeerViewController: UITableViewController, UISearchBarDelegate {
     
     // MARK: Methods
     
-    private func fetchData(query: String, page: Int, completion: @escaping (Result<SearchMovieResult, RequestError>) -> Void) {
+    func fetch(query: String, page: Int, completion: @escaping (Result<SearchMovieResult, RequestError>) -> Void) {
         Task(priority: .background) {
             let result = await service.search(query: query, page: page)
             completion(result)
         }
     }
     
-    func beganFetch() {
+    func didScrollFetch() {
         isPaging = true
         tableView.reloadSections(IndexSet(integer: 1), with: .none)
         self.currentPage += 1
-        
-        loadTableView(query: searchController.searchBar.text ?? "", page: self.currentPage)
     }
     
     func loadTableView(query: String, page: Int, completion: (() -> Void)? = nil) {
-        fetchData(query: query, page: page) { [weak self] result in
+        fetch(query: query, page: page) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
@@ -139,6 +138,8 @@ class SearchBeerViewController: UITableViewController, UISearchBarDelegate {
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }
     
+    // MARK: - ScrollView Methods
+    
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -146,7 +147,8 @@ class SearchBeerViewController: UITableViewController, UISearchBarDelegate {
         
         if offsetY > contentHeight - scrollViewHeight {
             if !isPaging && !movies.isEmpty  {
-                beganFetch()
+                didScrollFetch()
+                loadTableView(query: searchController.searchBar.text ?? "", page: self.currentPage)
             }
         }
     }
