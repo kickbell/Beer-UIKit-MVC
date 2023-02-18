@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct SearchMovieResult: Codable, Hashable {
-    let page: Int
-    let totalPages: Int
+struct SearchMovieResult: Decodable {
+//    let page: Int
+//    let totalPages: Int
     let totalResults: Int
     let results: [Movie]
 
     enum CodingKeys: String, CodingKey {
-        case page
+//        case page
         case results
-        case totalPages = "total_pages"
+//        case totalPages = "total_pages"
         case totalResults = "total_results"
     }
 }

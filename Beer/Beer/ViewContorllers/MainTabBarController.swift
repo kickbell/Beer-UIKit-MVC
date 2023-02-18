@@ -8,26 +8,23 @@
 import UIKit
 
 
-//맥주스토어    맥주검색(이름)      랜덤맥주
-//컴포지셔널       검색바         랜덤맥주 사진과 간단한설명만있는 컬렉션뷰 화면
-//레이아웃        페이징         즐겨찾기 추가할수있게 별표.
-//네트워킹      오토레이아웃 최적화  즐겨찾기 추가하면 로컬로 저장.
-//네트워킹테스트
+//코드정리하면서 재생성할건데.
 
-//상세페이지
-//상세설명 주루룩..
-//버튼있어서 클릭하면 이미지 웹뷰로 연결.
-
-
-//추가 구현해야 할 기능.
-
-//2. paging 처리
-//1. 이미지 캐싱처리
-//3. 테스트 코드
-
-//페이징으로 글하나 쓰자.
-//이미지 캐싱으로도 글하나쓰고?. wwdc 곁들여서.
-
+//1. 결과모델들 하나로 합치기
+//struct Movies {
+//    let items: [Movie]
+//}
+//
+//extension Movies: Decodable {
+//
+//    enum CodingKeys: String, CodingKey {
+//        case items = "results"
+//    }
+//}
+//
+//2. 코더블도 디코더블만으로 합치기
+//
+//3. 장르id값도 
 
 class MainTabBarController: UITabBarController {
     override func viewDidLoad() {

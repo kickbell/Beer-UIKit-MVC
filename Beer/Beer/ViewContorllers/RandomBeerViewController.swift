@@ -119,7 +119,7 @@ class RandomBeerViewController: UITabBarController {
             case .success(let trending):
                 self.trending = trending.results
                 self.configure(with: trending.results[0])
-                self.posterPath = trending.results[0].posterPath
+                self.posterPath = trending.results[0].backdropPath
             case .failure(let error):
                 self.showModal(title: "Error", message: error.customMessage)
             }
@@ -128,11 +128,25 @@ class RandomBeerViewController: UITabBarController {
     }
     
     func configure(with movie: Movie) {
-        imageView.load(urlStr: imagePath + (movie.backdropPath ?? ""))
         name.text = movie.title
         info.text = "| ⭐️\(movie.voteAverage) | \(movie.releaseDate) |"
         overview.text = movie.overview
-        posterPath = movie.posterPath
+        posterPath = movie.backdropPath
+        loadImage(for: movie)
+    }
+    
+    private func loadImage(for movie: Movie) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        ImageLoader.shared.loadImage(from: url) { result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     @objc func open() {

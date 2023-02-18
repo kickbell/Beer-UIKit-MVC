@@ -65,9 +65,23 @@ class SquareCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         imageView.image = nil
     }
     
-    func configure(with app: Movie) {
-        name.text = app.title
+    func configure(with movie: Movie) {
+        name.text = movie.title
 //        subtitle.text = app.overview
-        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
+        loadImage(for: movie)
+    }
+    
+    private func loadImage(for movie: Movie) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        ImageLoader.shared.loadImage(from: url) { result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

@@ -67,9 +67,17 @@ class ThreeTableCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         ])
     }
         
-    func configure(with app: Movie) {
-        name.text = app.title
-        subtitle.text = app.overview
-        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
+    func configure(with movie: Movie) {
+        name.text = movie.title
+        subtitle.text = movie.overview
+        loadImage(for: movie)
+    }
+    
+    private func loadImage(for movie: Movie) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        ImageLoader.shared.loadImage(from: url) { result in
+            guard let image = try? result.get() else { return }
+            DispatchQueue.main.async { self.imageView.image = image }
+        }
     }
 }

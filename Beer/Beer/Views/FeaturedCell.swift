@@ -72,10 +72,30 @@ class FeaturedCell: UICollectionViewCell, ConfigureView, SelfConfigureCell {
         stackView.setCustomSpacing(10, after: subtitle)
     }
     
-    func configure(with app: Movie) {
-        tagline.text = app.releaseDate
-        name.text = app.title
-        subtitle.text = app.overview == "" ? "구매: \(app.voteCount), 평점: \(app.voteAverage)" : app.overview
-        imageView.load(urlStr: imagePath + (app.backdropPath ?? ""))
+    func configure(with movie: Movie) {
+        tagline.text = movie.releaseDate
+        name.text = movie.title
+        subtitle.text = movie.overview == "" ? "구매: \(movie.voteCount), 평점: \(movie.voteAverage)" : movie.overview
+        loadImage(for: movie)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+    }
+    
+    private func loadImage(for movie: Movie) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        
+        ImageLoader.shared.loadImage(from: url) { result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

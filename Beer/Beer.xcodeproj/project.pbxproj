@@ -14,6 +14,8 @@
 		A8146D2D299C798E0080D108 /* MovieDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D2C299C798E0080D108 /* MovieDetail.swift */; };
 		A8146D2F299C8CB70080D108 /* TrendingMovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D2E299C8CB70080D108 /* TrendingMovieResult.swift */; };
 		A8146D31299ECCBA0080D108 /* SearchLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D30299ECCBA0080D108 /* SearchLoadingCell.swift */; };
+		A8146D3329A0B0CE0080D108 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D3229A0B0CE0080D108 /* ImageLoader.swift */; };
+		A8146D3629A0B0ED0080D108 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8146D3529A0B0ED0080D108 /* ImageCache.swift */; };
 		A82B8F5729892A64002E6FA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82B8F5629892A64002E6FA6 /* AppDelegate.swift */; };
 		A82B8F5B29892A64002E6FA6 /* BeerStoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82B8F5A29892A64002E6FA6 /* BeerStoreViewController.swift */; };
 		A82B8F6029892A67002E6FA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A82B8F5F29892A67002E6FA6 /* Assets.xcassets */; };
@@ -73,6 +75,8 @@
 		A8146D2C299C798E0080D108 /* MovieDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetail.swift; sourceTree = "<group>"; };
 		A8146D2E299C8CB70080D108 /* TrendingMovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingMovieResult.swift; sourceTree = "<group>"; };
 		A8146D30299ECCBA0080D108 /* SearchLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLoadingCell.swift; sourceTree = "<group>"; };
+		A8146D3229A0B0CE0080D108 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		A8146D3529A0B0ED0080D108 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		A82B8F5329892A64002E6FA6 /* Beer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A82B8F5629892A64002E6FA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A82B8F5A29892A64002E6FA6 /* BeerStoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerStoreViewController.swift; sourceTree = "<group>"; };
@@ -136,6 +140,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A8146D3429A0B0D50080D108 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A8146D3229A0B0CE0080D108 /* ImageLoader.swift */,
+				A8146D3529A0B0ED0080D108 /* ImageCache.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		A82B8F4A29892A64002E6FA6 = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +177,7 @@
 				A82B8FA6298D6CD3002E6FA6 /* ViewContorllers */,
 				A84A48DB299058A100DF67B5 /* Views */,
 				A84A48DC299058A700DF67B5 /* Models */,
+				A8146D3429A0B0D50080D108 /* Utils */,
 				A84A48E22990653400DF67B5 /* JSON */,
 				A8B6BB702994ECE400A2AC1A /* Network */,
 				A84A48DA2990587B00DF67B5 /* Protocols */,
@@ -441,6 +455,7 @@
 				A85FA3CF2999D3D700BAB4A9 /* HttpClient.swift in Sources */,
 				A82B8FAA298D7236002E6FA6 /* SearchBeerViewController.swift in Sources */,
 				A84A48D92990586300DF67B5 /* SectionHeader.swift in Sources */,
+				A8146D3629A0B0ED0080D108 /* ImageCache.swift in Sources */,
 				A84A48DF299059EB00DF67B5 /* SelfConfigureCell.swift in Sources */,
 				A84A48D12990584600DF67B5 /* Item.swift in Sources */,
 				A85FA3CB2996C7F200BAB4A9 /* Error.swift in Sources */,
@@ -464,6 +479,7 @@
 				A84A48D32990584F00DF67B5 /* FeaturedCell.swift in Sources */,
 				A82B8FA8298D7226002E6FA6 /* RandomBeerViewController.swift in Sources */,
 				A85FA3CD2999D3A100BAB4A9 /* HttpMethod.swift in Sources */,
+				A8146D3329A0B0CE0080D108 /* ImageLoader.swift in Sources */,
 				A8146D2D299C798E0080D108 /* MovieDetail.swift in Sources */,
 				A84A48D52990585600DF67B5 /* ThreeTableCell.swift in Sources */,
 				A82B8FAE298D983B002E6FA6 /* DetailViewController.swift in Sources */,

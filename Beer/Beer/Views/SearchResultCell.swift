@@ -74,31 +74,29 @@ class SearchResultCell: UITableViewCell, ConfigureView, SelfConfigureCell {
         ])
     }
     
-    func configure(with app: Movie) {
-        tagline.text = app.releaseDate
-        name.text = app.title
-        desc.text = app.overview
-        image.load(urlStr: imagePath + (app.backdropPath ?? ""))
+    func configure(with movie: Movie) {
+        tagline.text = movie.releaseDate
+        name.text = movie.title
+        desc.text = movie.overview
+        loadImage(for: movie)
+        
+    }
+    
+    private func loadImage(for movie: Movie) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        ImageLoader.shared.loadImage(from: url) { result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.image.image = image
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
 
 var imagePath = "https://image.tmdb.org/t/p/w500"
-extension UIImageView {
-    func load(urlStr: String) {
-        guard let url = URL(string: urlStr) else {
-            print("invalid url...")
-            return
-        }
-        
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
-}
+

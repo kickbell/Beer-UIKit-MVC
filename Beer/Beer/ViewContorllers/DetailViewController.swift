@@ -114,14 +114,29 @@ class DetailViewController: UITabBarController {
             }
             completion?()
         }
+        
     }
     
     func configure(with movie: MovieDetail) {
-        imageView.load(urlStr: imagePath + (movie.backdropPath ?? ""))
         name.text = movie.title
         tagline.text = movie.tagline
         info.text = "| ⭐️\(movie.voteAverage) | \(movie.releaseDate) | \(movie.runtime ?? 0)분 | \(movie.genres.map { $0.name }.joined(separator: ", ")) |"
         overview.text = movie.overview
+        loadImage(for: movie)
+    }
+    
+    private func loadImage(for movie: MovieDetail) {
+        let url = URL(string: imagePath + (movie.backdropPath ?? ""))!
+        ImageLoader.shared.loadImage(from: url) { result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     @objc func open() {

@@ -45,14 +45,15 @@ extension MoviesEndpoint: Endpoint {
     }
 
     var header: [String: String]? {
-        let accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWRkYmFmNTI2M2I1Yjc2MDdkNTMyODVmZWM1MDNjMCIsInN1YiI6IjYzZTk3ZDAyNjNhYWQyMDBhMTRjZTExYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.59Q8s9i6484U8W2h0M7e8ZmOye6yLMAmJ2-6KltKFhE"
-        switch self {
-        default:
-            return [
-                "Authorization": "Bearer \(accessToken)",
-                "Content-Type": "application/json;charset=utf-8"
-            ]
-        }
+//        let accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWRkYmFmNTI2M2I1Yjc2MDdkNTMyODVmZWM1MDNjMCIsInN1YiI6IjYzZTk3ZDAyNjNhYWQyMDBhMTRjZTExYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.59Q8s9i6484U8W2h0M7e8ZmOye6yLMAmJ2-6KltKFhE"
+//        switch self {
+//        default:
+//            return [
+//                "Authorization": "Bearer \(accessToken)",
+//                "Content-Type": "application/json;charset=utf-8"
+//            ]
+//        }
+        return nil
     }
     
     var body: [String: String]? {
@@ -61,7 +62,7 @@ extension MoviesEndpoint: Endpoint {
     
     var queryItems: [URLQueryItem] {
         var queryItems:[URLQueryItem] = [
-            URLQueryItem(name: "api_key", value: "8eddbaf5263b5b7607d53285fec503c0"),
+            URLQueryItem(name: "api_key", value: ApiConstants.apiKey),
             URLQueryItem(name: "language", value: "ko-KR"),
         ]
         
@@ -76,4 +77,11 @@ extension MoviesEndpoint: Endpoint {
         
         return queryItems
     }
+}
+
+struct ApiConstants {
+    static let apiKey = "8eddbaf5263b5b7607d53285fec503c0"
+    static let baseUrl = URL(string: "https://api.themoviedb.org/3")!
+    static let originalImageUrl = URL(string: "https://image.tmdb.org/t/p/original")!
+    static let smallImageUrl = URL(string: "https://image.tmdb.org/t/p/w154")!
 }
